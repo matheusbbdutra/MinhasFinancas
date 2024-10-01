@@ -8,7 +8,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class DashboardAction extends AbstractController
 {
-
     #[Route('/dashboard', name: 'dashboard')]
     public function __invoke(): Response
     {
