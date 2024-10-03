@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center">
+  <div class="text-center bg-gray-800 rounded-lg shadow-md p-6">
     <p class="text-sm text-gray-400">Inicial</p>
     <p class="text-xl font-bold text-white">{{ formatCurrency(saldoInicial) }}</p>
   </div>

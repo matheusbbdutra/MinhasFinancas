@@ -9,25 +9,28 @@
       </svg>
     </button>
 
-    <!-- Menu Flutuante -->
     <transition name="fade">
       <div v-if="showMenu" class="fixed bottom-16 right-8 bg-gray-800 rounded-lg shadow-lg p-4 w-72 z-50">
         <ul>
-          <li @click="openModal('transferencia')" class="flex items-center space-x-3 py-3 border-b border-gray-700 hover:bg-gray-700 cursor-pointer">
+          <li v-if="!isContasRoute" @click="openModal('transferencia')" class="flex items-center space-x-3 py-3 border-b border-gray-700 hover:bg-gray-700 cursor-pointer">
             <ArrowUpDown class="w-6 h-6 text-yellow-400" />
             <span class="text-white">Transferência</span>
           </li>
-          <li @click="openModal('receita')" class="flex items-center space-x-3 py-3 border-b border-gray-700 hover:bg-gray-700 cursor-pointer">
+          <li v-if="!isContasRoute" @click="openModal('receita')" class="flex items-center space-x-3 py-3 border-b border-gray-700 hover:bg-gray-700 cursor-pointer">
             <PlusCircle class="w-6 h-6 text-green-400" />
             <span class="text-white">Receita</span>
           </li>
-          <li @click="openModal('despesa')" class="flex items-center space-x-3 py-3 border-b border-gray-700 hover:bg-gray-700 cursor-pointer">
+          <li v-if="!isContasRoute" @click="openModal('despesa')" class="flex items-center space-x-3 py-3 border-b border-gray-700 hover:bg-gray-700 cursor-pointer">
             <MinusCircle class="w-6 h-6 text-red-400" />
             <span class="text-white">Despesa</span>
           </li>
-          <li @click="openModal('despesaCartao')" class="flex items-center space-x-3 py-3 hover:bg-gray-700 cursor-pointer">
+          <li v-if="!isContasRoute" @click="openModal('despesaCartao')" class="flex items-center space-x-3 py-3 hover:bg-gray-700 cursor-pointer">
             <CreditCard class="w-6 h-6 text-blue-400" />
             <span class="text-white">Despesa Cartão</span>
+          </li>
+          <li v-if="isContasRoute" @click="openModal('novaConta')" class="flex items-center space-x-3 py-3 hover:bg-gray-700 cursor-pointer">
+            <Banknote class="w-6 h-6 text-blue-400" />
+            <span class="text-white">Nova Conta</span>
           </li>
         </ul>
       </div>
@@ -50,20 +53,27 @@
       <NovaDespesaCartao />
     </Modal>
 
+    <Modal v-if="currentModal === 'novaConta'" @close="closeModal">
+      <NovaConta />
+    </Modal>
   </div>
+
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { ArrowUpDown, PlusCircle, MinusCircle, CreditCard } from 'lucide-vue-next';
+import {computed, ref} from 'vue';
+import { useRoute } from 'vue-router';
+import { ArrowUpDown, PlusCircle, MinusCircle, CreditCard, Banknote } from 'lucide-vue-next';
 import Modal from './modals/Modal.vue'
 import NovaTransferencia from './modals/NovaTransferencia.vue'
 import NovaReceita from './modals/NovaReceita.vue'
 import NovaDespesa from './modals/NovaDespesa.vue'
 import NovaDespesaCartao from './modals/NovaDespesaCartao.vue'
+import NovaConta from "./modals/NovaConta.vue";
 
 const showMenu = ref(false);
 const currentModal = ref(null);
+const route = useRoute();
 
 const toggleMenu = () => {
   showMenu.value = !showMenu.value;
@@ -77,4 +87,6 @@ const openModal = (modalName) => {
 const closeModal = () => {
   currentModal.value = null
 }
+
+const isContasRoute = computed(() => route.path === '/contas');
 </script>

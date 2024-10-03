@@ -7,5 +7,8 @@
 import './styles/app.css';
 import { createApp } from 'vue';
 import App from './vue/App.vue';
+import router from './vue/Router';
 
-createApp(App).mount('#app');
+const app = createApp(App);
+app.use(router);
+app.mount('#app');

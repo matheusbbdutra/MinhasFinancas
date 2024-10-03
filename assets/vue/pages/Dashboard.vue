@@ -1,39 +1,39 @@
 <template>
-  <div class="min-h-screen bg-gray-900 text-white flex">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 shadow-lg">
-      <div class="p-4">
-        <h1 class="text-2xl font-bold text-white">Dashboard</h1>
-      </div>
-      <nav class="mt-4">
-        <a
-            v-for="item in navItems"
-            :key="item.name"
-            href="#"
-            class="flex items-center px-4 py-3 text-gray-400 hover:bg-gray-700 hover:text-white transition-colors duration-200"
-        >
-          <component :is="item.icon" class="w-5 h-5 mr-2" />
-          {{ item.name }}
-        </a>
-      </nav>
-    </aside>
 
-    <!-- Main Content -->
-    <main class="flex-1 p-8 bg-gray-900 overflow-auto relative">
       <header class="mb-8">
-        <h2 class="text-3xl font-semibold text-white">Visão Geral</h2>
+        <div class="flex justify-between items-center">
+          <h2 class="text-4xl font-semibold text-white mr-4">Dashboard</h2>
+          <div class="bg-gray-800 rounded-lg shadow-md p-6 relative">
+            <div class="flex space-x-8">
+              <div class="date-selector flex items-center">
+                <label for="month" class="mr-2">Mês</label>
+                <select v-model="selectedMonth" id="month" class="p-2 rounded-lg bg-gray-700 text-white mr-4">
+                  <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
+                </select>
+
+                <label for="year" class="mr-2">Ano</label>
+                <select v-model="selectedYear" id="year" class="p-2 rounded-lg bg-gray-700 text-white">
+                  <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+                </select>
+              </div>
+              <div class="user-info flex items-center">
+                <UserCircle class="w-12 h-12 rounded-full mr-4"/>
+                <div>
+                  <p class="text-lg font-semibold">{{ user.name }}</p>
+                  <p class="text-sm text-gray-400">{{ user.email }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </header>
 
-      <!-- Novo Card de Saldo -->
-      <div class="bg-gray-800 rounded-lg shadow-md p-6 mb-8">
-        <div class="flex justify-center items-center space-x-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <SaldoInicial />
           <SaldoAtual />
           <SaldoPrevisto />
-        </div>
       </div>
 
-      <!-- Cards Overview -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <CardContas />
         <CardReceitas />
@@ -51,31 +51,22 @@
 
       <!-- Floating Action Button (FAB) -->
       <FloatingActionButton />
-    </main>
-  </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { LayoutDashboard, Users, CreditCard, Settings } from 'lucide-vue-next';
 import { Chart, LineController, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import SaldoInicial from './components/SaldoInicial.vue';
-import SaldoAtual from './components/SaldoAtual.vue';
-import SaldoPrevisto from './components/SaldoPrevisto.vue';
-import CardContas from './components/cards/CardContas.vue';
-import CardReceitas from './components/cards/CardReceitas.vue';
-import CardDespesas from './components/cards/CardDespesas.vue';
-import CardCartoesCredito from './components/cards/CardCartoesCredito.vue';
-import FloatingActionButton from './components/FloatingActionButton.vue';
+import SaldoInicial from '../components/cards/SaldoInicial.vue';
+import SaldoAtual from '../components/cards/SaldoAtual.vue';
+import SaldoPrevisto from '../components/cards/SaldoPrevisto.vue';
+import CardContas from '../components/cards/CardContas.vue';
+import CardReceitas from '../components/cards/CardReceitas.vue';
+import CardDespesas from '../components/cards/CardDespesas.vue';
+import CardCartoesCredito from '../components/cards/CardCartoesCredito.vue';
+import FloatingActionButton from '../components/FloatingActionButton.vue';
+import { UserCircle } from 'lucide-vue-next';
 
 Chart.register(LineController, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-
-const navItems = ref([
-  { name: 'Dashboard', icon: LayoutDashboard },
-  { name: 'Accounts', icon: Users },
-  { name: 'Transactions', icon: CreditCard },
-  { name: 'Settings', icon: Settings },
-]);
 
 const expenseChart = ref(null);
 
@@ -87,7 +78,25 @@ const saldoInicial = ref(3.86);
 const saldoAtual = ref(6.84);
 const saldoPrevisto = ref(6.84);
 
-// Gerar dados para o gráfico de despesas
+const dateTime = new Date();
+const months = Array.from({ length: 12 }, (_, i) => {
+  return new Date(0, i).toLocaleString('pt-BR', { month: 'long' });
+});
+const currentYear = dateTime.getFullYear();
+const years = Array.from({ length: 10 }, (_, i) => currentYear + i);
+const selectedMonth = ref((dateTime.getMonth() + 1).toString().padStart(2, '0'));
+const selectedYear = ref(currentYear.toString());
+const data = {
+  month: selectedMonth.value,
+  year: selectedYear.value
+};
+
+const user = {
+      name: "John Snow",
+      email: "john.snow@example.com",
+      profileImage: "path/to/profile-image.jpg"
+};
+
 const generateExpenseData = () => {
   return [
     { day: '01 a 02', expense: 2500 },
