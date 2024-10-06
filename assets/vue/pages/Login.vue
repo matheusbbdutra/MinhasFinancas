@@ -67,7 +67,7 @@
 
 <script>
 import axios from "axios";
-import ThemedSwal from "../../js/utils/ThemedSwal";
+import ThemedSwal from "../../utils/ThemedSwal";
 
 export default {
   data() {
