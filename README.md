@@ -1,38 +1,42 @@
-# Financial Dashboard Project
+# Dashboard de Finanças Pessoais
 
-This project is a financial dashboard built with Vue.js and Symfony. It provides an overview of accounts, revenues, expenses, and credit card transactions.
+Este projeto é um painel financeiro construído com Vue.js e Symfony. Ele fornece uma visão geral de contas, receitas, despesas e transações com cartão de crédito.
 
-## Installation
+### Pré-requisitos
 
-### Prerequisites
-
-- Node.js and npm
-- PHP and Composer
 - Docker
 
-### Steps
+### Passos
 
-1. Clone the repository:
+1. Clonar o repositorio:
    ```sh
    git clone https://github.com/matheusbbdutra/financial-dashboard.git
    cd financial-dashboard
+   
+2. Iniciar o docker compose:
+   ```sh
+   docker compose up -d --build
+   
+3. Acessar o container:
+   ```sh
+   docker compose exec app /bin/bash
+   
+4. Configurar .env:
+   ```sh
+   cp .env.example .env
+   
 
-2. Install PHP dependencies:
+5. Instale dependências PHP:
     ```sh
     composer install
 
-3. Install JavaScript dependencies:
+6. Instale dependências JS:
    ```sh
     npm install
-4. Set up environment variables:
-   ```sh
-    cp .env.example .env
-   
-5. Build assets:  
-   ```sh
-    npm run dev
-6. Start the Docker containers:
-   ```sh
-   docker compose up -d --build
 
-7 . Acess the dashboard: http://localhost:8000/dashboard
+7. Build assets:  
+   ```sh
+    npm run dev || npm run watch
+
+8.Acessar dashboard:
+   http://localhost:8000/dashboard
