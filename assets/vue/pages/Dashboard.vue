@@ -16,12 +16,15 @@
                   <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
                 </select>
               </div>
-              <div class="user-info flex items-center">
+              <div class="user-info flex items-center cursor-pointer relative" @click="toggleDropdown" ref="userInfo">
                 <UserCircle class="w-12 h-12 rounded-full mr-4"/>
                 <div>
                   <p class="text-lg font-semibold">{{ user.name }}</p>
                   <p class="text-sm text-gray-400">{{ user.email }}</p>
                 </div>
+                <transition name="fade">
+                  <Menu v-if="isDropdownOpen" ref="userDropdown" @closeDropdown="isDropdownOpen = false"/>
+                </transition>
               </div>
             </div>
           </div>
@@ -54,7 +57,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, onBeforeUnmount} from 'vue';
 import { Chart, LineController, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import SaldoInicial from '../components/cards/SaldoInicial.vue';
 import SaldoAtual from '../components/cards/SaldoAtual.vue';
@@ -65,11 +68,35 @@ import CardDespesas from '../components/cards/CardDespesas.vue';
 import CardCartoesCredito from '../components/cards/CardCartoesCredito.vue';
 import FloatingActionButton from '../components/FloatingActionButton.vue';
 import { UserCircle } from 'lucide-vue-next';
+import Menu from "../components/modals/Menu.vue";
 
 Chart.register(LineController, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const expenseChart = ref(null);
+const isDropdownOpen = ref(false);
+const userInfoRef = ref(null);
+const userDropdownRef = ref(null);
 
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
+
+const handleClickOutside = (event) => {
+  if (
+      userInfoRef.value && !userInfoRef.value.contains(event.target) &&
+      userDropdownRef.value && !userDropdownRef.value.contains(event.target)
+  ) {
+    isDropdownOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 const formatCurrency = (value) => {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 };
