@@ -3,3 +3,6 @@ controllers:
         path: ../src/Presentation/
         namespace: App\Presentation
     type: attribute
+    
+api_login_check:
+    path: /api/usuario/login

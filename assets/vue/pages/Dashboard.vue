@@ -92,8 +92,8 @@ const data = {
 };
 
 const user = {
-      name: "John Snow",
-      email: "john.snow@example.com",
+      name: sessionStorage.getItem('userName'),
+      email: sessionStorage.getItem('userEmail'),
       profileImage: "path/to/profile-image.jpg"
 };
 
