@@ -35,6 +35,7 @@ services:
 
 volumes:
   pgdata:
+    driver: local
 
 networks:
   symfony:
