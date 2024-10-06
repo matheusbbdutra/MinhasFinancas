@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="App\Domain\Financas\Entity\Transacao" table="transacao">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <many-to-one field="conta" target-entity="App\Domain\Financas\Entity\Conta">
+            <join-column name="conta_id" referenced-column-name="id"/>
+        </many-to-one>
+        <field name="valor" type="float"/>
+        <many-to-one field="tipoTransacao" target-entity="App\Domain\Financas\Entity\TipoTransacao">
+            <join-column name="tipo_transacao_id" referenced-column-name="id"/>
+        </many-to-one>
+        <field name="dtLancamento" type="datetime"/>
+        <field name="dtVencimento" type="datetime"/>
+    </entity>
+</doctrine-mapping>

@@ -34,6 +34,7 @@
         "lucide-vue-next": "^0.446.0",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
+        "sweetalert2": "^11.14.1",
         "vue-chartjs": "^5.3.1",
         "vue-router": "^4.0.13"
     }

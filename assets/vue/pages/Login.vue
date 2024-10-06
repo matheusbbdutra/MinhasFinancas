@@ -6,6 +6,18 @@
         {{ loginMode ? 'Login' : 'Registrar' }}
       </h2>
 
+      <div v-if="!loginMode" class="mb-4">
+        <label for="name" class="block text-sm font-medium text-gray-300">Nome</label>
+        <input
+            type="text"
+            id="name"
+            v-model="name"
+            required
+            class="mt-1 w-full p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Digite seu nome"
+        />
+      </div>
+      
       <form @submit.prevent="submitForm">
         <div class="mb-4">
           <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
@@ -18,19 +30,7 @@
               placeholder="Digite seu email"
           />
         </div>
-
-        <div v-if="!loginMode" class="mb-4">
-          <label for="name" class="block text-sm font-medium text-gray-300">Nome</label>
-          <input
-              type="text"
-              id="name"
-              v-model="name"
-              required
-              class="mt-1 w-full p-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Digite seu nome"
-          />
-        </div>
-
+        
         <div class="mb-6">
           <label for="password" class="block text-sm font-medium text-gray-300">Senha</label>
           <input
@@ -66,6 +66,9 @@
 </template>
 
 <script>
+import axios from "axios";
+import ThemedSwal from "../../js/utils/ThemedSwal";
+
 export default {
   data() {
     return {
@@ -77,29 +80,51 @@ export default {
   },
   methods: {
     toggleMode() {
-      // Alterna entre o modo de Login e Registrar
       this.loginMode = !this.loginMode;
-      // Limpa os campos ao alternar
       this.email = '';
       this.password = '';
       this.name = '';
     },
-    submitForm() {
-      if (this.loginMode) {
-        // Lógica de login
-        console.log('Logando com:', this.email, this.password);
-        // Faça uma requisição à API de login
-        const mockApiResponse = {token: '1234567890'}; // Exemplo fictício
-        sessionStorage.setItem('authToken', mockApiResponse.token);
-        this.$router.push('/dashboard');
-      } else {
-        // Lógica de registro
-        console.log('Registrando com:', this.name, this.email, this.password);
-        // Faça uma requisição à API de registro
-        const mockRegisterResponse = {success: true}; // Exemplo fictício
-        if (mockRegisterResponse.success) {
-          alert('Registrado com sucesso! Faça login.');
-          this.toggleMode(); // Alterna para a tela de login após o registro bem-sucedido
+    async submitForm() {
+      try {
+        let response;
+        if (this.loginMode) {
+          response = await axios.post('/api/usuario/login', {
+            email: this.email,
+            password: this.password
+          });
+        } else {
+          response = await axios.post('/api/usuario/registrar', {
+            email: this.email,
+            senha: this.password,
+            nome: this.name,
+            acao: 'create'
+          });
+        }
+
+        if (response.status === 200 || response.status === 201) {
+          const token = response.data.token;
+          const user = response.data.user;
+  
+          sessionStorage.setItem('userName', user.name);
+          sessionStorage.setItem('userEmail', user.email);
+          sessionStorage.setItem('authToken', token);
+
+          await this.$router.push('/dashboard');
+        }
+      } catch (error) {
+        if (this.loginMode && error.response && error.response.status === 401) {
+          await ThemedSwal.fire({
+            icon: 'error',
+            title: 'Authentication Failed',
+            text: 'Email ou senha inválida, tente novamente.'
+          });
+        } else {
+          await ThemedSwal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Erro ao se registrar, tente novamente.'
+          });
         }
       }
     }

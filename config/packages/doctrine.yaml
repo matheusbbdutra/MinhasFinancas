@@ -16,12 +16,18 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
-            App:
-                type: attribute
+            Usuario:
+                type: xml
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/Infrastructure/Persistence/Doctrine/Mapping'
-                prefix: 'App\Domain'
-                alias: App
+                dir: '%kernel.project_dir%/src/Infrastructure/Persistence/Usuario/Mapping'
+                prefix: 'App\Domain\Usuario\Entity'
+                alias: Usuario
+            Financas:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Infrastructure/Persistence/Financas/Mapping'
+                prefix: 'App\Domain\Financas\Entity'
+                alias: Financas
         controller_resolver:
             auto_mapping: false
 
